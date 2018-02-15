@@ -1,0 +1,84 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package net.coolmarch.cmnew.mchart;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import net.coolmarch.cmnew.common.TickData;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+/**
+ *
+ * @author salam
+ */
+public class SDataChart {
+
+    private ChartPanel cp;
+    private ArrayList<TickData> al;
+
+    public SDataChart(ArrayList<TickData> al) {
+        this.al = al;
+        Collections.reverse(al);
+        DefaultCategoryDataset ds = (DefaultCategoryDataset) createDataset();
+        JFreeChart chart = ChartFactory.createLineChart("", "",
+                "", ds, PlotOrientation.VERTICAL, false, true, true);
+        chart.getCategoryPlot().getRangeAxis().setLowerBound(getMinimum());
+        chart.getCategoryPlot().getRangeAxis().setUpperBound(getMaximum());
+        chart.getCategoryPlot().getDomainAxis().setTickLabelsVisible(false);
+        chart.getCategoryPlot().getDomainAxis().setTickMarksVisible(false);
+        cp = new ChartPanel(chart);
+    }
+
+    public ChartPanel getChartPanel() {
+        return cp;
+    }
+
+    private CategoryDataset createDataset() {
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        for (TickData td : al) {
+            double price = td.getDailyQuotePrice();
+            Date d = td.getQuoteDate();
+            dataset.addValue(price, "Price", sdf.format(d));
+        }
+
+        return dataset;
+    }
+
+    private double getMinimum() {
+        double min = al.get(0).getDailyQuotePrice();
+        for (TickData td : al) {
+            double pr = td.getDailyQuotePrice();
+            if (pr < min) {
+                min = pr;
+            }
+        }
+
+        return min;
+    }
+
+    private double getMaximum() {
+        double max = al.get(0).getDailyQuotePrice();
+        for (TickData td : al) {
+            double pr = td.getDailyQuotePrice();
+            if (pr > max) {
+                max = pr;
+            }
+        }
+
+        return max;
+    }
+
+}

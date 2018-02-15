@@ -1,0 +1,2 @@
+net.coolmarch.cmnew.sectorprogress.ScComparator
+net.coolmarch.cmnew.sectorprogress.PnlSectorPerformance
